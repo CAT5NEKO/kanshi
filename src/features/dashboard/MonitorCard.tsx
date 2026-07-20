@@ -3,8 +3,17 @@ import type { MonitorState } from "@/shared/api"
 import { StatusBadge } from "./StatusBadge"
 import { UptimeBar } from "./UptimeBar"
 
+const STATUS_BORDER: Record<string, string> = {
+	up: "#22c55e",
+	down: "#ef4444",
+	unknown: "#d1d5db",
+}
+
 export function MonitorCard({ monitor }: { monitor: MonitorState }) {
 	const lastChecked = monitor.last_checked_at ? formatTimeAgo(monitor.last_checked_at) : "Never"
+	const responseTime =
+		monitor.response_time_ms != null ? `${monitor.response_time_ms}ms` : null
+	const borderColor = STATUS_BORDER[monitor.status]
 
 	return (
 		<Link
@@ -14,9 +23,10 @@ export function MonitorCard({ monitor }: { monitor: MonitorState }) {
 				display: "block",
 				textDecoration: "none",
 				color: "inherit",
-				padding: "clamp(12px, 3vw, 16px)",
+				padding: "clamp(10px, 2.5vw, 16px) clamp(10px, 2.5vw, 16px)",
 				borderRadius: "8px",
 				border: "1px solid #e5e7eb",
+				borderLeft: `3px solid ${borderColor}`,
 				background: "#ffffff",
 				transition: "box-shadow 0.15s ease",
 			}}
@@ -28,20 +38,21 @@ export function MonitorCard({ monitor }: { monitor: MonitorState }) {
 			}}
 		>
 			<div
-				className="card-row"
 				style={{
 					display: "flex",
 					alignItems: "center",
 					justifyContent: "space-between",
-					marginBottom: "8px",
+					gap: "8px",
+					marginBottom: "6px",
 				}}
 			>
 				<span
 					style={{
 						fontWeight: 600,
-						fontSize: "clamp(14px, 3vw, 16px)",
+						fontSize: "clamp(13px, 2.8vw, 16px)",
 						wordBreak: "break-word",
 						flex: 1,
+						minWidth: 0,
 					}}
 				>
 					{monitor.name}
@@ -51,9 +62,9 @@ export function MonitorCard({ monitor }: { monitor: MonitorState }) {
 
 			<div
 				style={{
-					fontSize: "13px",
+					fontSize: "12px",
 					color: "#6b7280",
-					marginBottom: "10px",
+					marginBottom: "8px",
 					overflow: "hidden",
 					textOverflow: "ellipsis",
 					whiteSpace: "nowrap",
@@ -63,18 +74,34 @@ export function MonitorCard({ monitor }: { monitor: MonitorState }) {
 			</div>
 
 			<div
-				className="uptime-row"
 				style={{
 					display: "flex",
 					alignItems: "center",
-					justifyContent: "space-between",
-					gap: "12px",
+					gap: "10px",
 				}}
 			>
 				<div style={{ flex: 1, minWidth: 0 }}>
 					<UptimeBar pct={monitor.uptime_pct} />
 				</div>
-				<span style={{ fontSize: "12px", color: "#9ca3af", whiteSpace: "nowrap" }}>
+				{responseTime && (
+					<span
+						style={{
+							fontSize: "11px",
+							color: "#6b7280",
+							whiteSpace: "nowrap",
+							fontVariantNumeric: "tabular-nums",
+						}}
+					>
+						{responseTime}
+					</span>
+				)}
+				<span
+					style={{
+						fontSize: "11px",
+						color: "#9ca3af",
+						whiteSpace: "nowrap",
+					}}
+				>
 					{lastChecked}
 				</span>
 			</div>
@@ -85,11 +112,11 @@ export function MonitorCard({ monitor }: { monitor: MonitorState }) {
 function formatTimeAgo(iso: string): string {
 	const diff = Date.now() - new Date(iso).getTime()
 	const seconds = Math.floor(diff / 1000)
-	if (seconds < 60) return `${seconds}s ago`
+	if (seconds < 60) return `${seconds}s`
 	const minutes = Math.floor(seconds / 60)
-	if (minutes < 60) return `${minutes}m ago`
+	if (minutes < 60) return `${minutes}m`
 	const hours = Math.floor(minutes / 60)
-	if (hours < 24) return `${hours}h ago`
+	if (hours < 24) return `${hours}h`
 	const days = Math.floor(hours / 24)
-	return `${days}d ago`
+	return `${days}d`
 }

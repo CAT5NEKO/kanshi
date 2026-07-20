@@ -3,11 +3,11 @@ export function UptimeBar({ pct }: { pct: number }) {
 	const color = clamped >= 99 ? "#22c55e" : clamped >= 95 ? "#f59e0b" : "#ef4444"
 
 	return (
-		<div style={{ display: "flex", alignItems: "center", gap: "8px", width: "100%" }}>
+		<div style={{ display: "flex", alignItems: "center", gap: "6px", width: "100%" }}>
 			<div
 				style={{
 					flex: 1,
-					height: "6px",
+					height: "5px",
 					borderRadius: "3px",
 					background: "#e5e7eb",
 					overflow: "hidden",
@@ -25,11 +25,12 @@ export function UptimeBar({ pct }: { pct: number }) {
 			</div>
 			<span
 				style={{
-					fontSize: "clamp(11px, 2vw, 13px)",
+					fontSize: "clamp(10px, 2vw, 13px)",
 					fontWeight: 600,
 					color,
-					minWidth: "48px",
+					minWidth: "44px",
 					textAlign: "right",
+					fontVariantNumeric: "tabular-nums",
 				}}
 			>
 				{clamped.toFixed(1)}%

@@ -21,7 +21,7 @@ function RootLayout() {
 				<Link
 					to="/"
 					style={{
-						fontSize: "20px",
+						fontSize: "clamp(18px, 4vw, 20px)",
 						fontWeight: 700,
 						textDecoration: "none",
 						color: "inherit",
